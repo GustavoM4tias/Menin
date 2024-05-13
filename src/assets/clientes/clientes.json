@@ -1,0 +1,52 @@
+[
+  {
+    "fullName": "Gustavo Henrique Matias Diniz",
+    "phoneNumber": "+5514998675593",
+    "empreendimento": "Montana"
+  },
+  {
+    "fullName": "Maria da Silva",
+    "phoneNumber": "+5512345678901",
+    "empreendimento": "Buritis"
+  },
+  {
+    "fullName": "João Oliveira",
+    "phoneNumber": "+5511123456789",
+    "empreendimento": "Montana"
+  },
+  {
+    "fullName": "Ana Souza",
+    "phoneNumber": "+5519987654321",
+    "empreendimento": "Terras de São Paulo"
+  },
+  {
+    "fullName": "Pedro Santos",
+    "phoneNumber": "+5516778899000",
+    "empreendimento": "Urban"
+  },
+  {
+    "fullName": "Carla Pereira",
+    "phoneNumber": "+5514876543210",
+    "empreendimento": "Buritis"
+  },
+  {
+    "fullName": "Marcos Oliveira",
+    "phoneNumber": "+5511324354657",
+    "empreendimento": "Terras de São Paulo"
+  },
+  {
+    "fullName": "Juliana Lima",
+    "phoneNumber": "+5514999999999",
+    "empreendimento": "Montana"
+  },
+  {
+    "fullName": "Lucas Fernandes",
+    "phoneNumber": "+5514987654321",
+    "empreendimento": "Urban"
+  },
+  {
+    "fullName": "Andreia Costa",
+    "phoneNumber": "+5511223344556",
+    "empreendimento": "Buritis"
+  }
+]
