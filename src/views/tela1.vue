@@ -4,7 +4,7 @@
     <!-- Div para exibir variáveis selecionadas -->
     <div class="col-lg-5">
       <div class="d-flex justify-content-center text-light">
-        <h2 class="my-3">Gerador de disparo</h2>
+        <h2 class="my-3">Gerador com Consulta</h2>
       </div>
       <div class="card py-3 d-flex flex-column align-items-center">
 

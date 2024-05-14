@@ -1,89 +1,7 @@
-<script setup>
-import { ref } from 'vue';
-
-const countryCode = ref('55');
-const phoneNumber = ref('');
-const variables = ref([]);
-const dataRows = ref([]);
-
-function addVariable() {
-  variables.value.push('');
-}
-
-function removeVariable(index) {
-  variables.value.splice(index, 1);
-}
-
-function updateVariable(newValue, index) {
-  variables.value[index] = newValue;
-}
-
-function validatePhoneNumber(phoneNumber) {
-  return /^\d{7,13}$/.test(phoneNumber.replace(/\s/g, ''));
-}
-
-function validateVariables() {
-  return variables.value.every(variable => variable.trim() !== '');
-}
-
-function addData() {
-  const phoneNumberValid = validatePhoneNumber(phoneNumber.value);
-  const variablesValid = validateVariables();
-
-  if (!phoneNumberValid) {
-    alert("Número de telefone inválido!");
-    return;
-  }
-
-  if (!variablesValid) {
-    alert("Preencha todos os campos das variáveis!");
-    return;
-  }
-
-  const formattedPhoneNumber = `+${countryCode.value}${phoneNumber.value}`;
-  const rowData = {
-    phoneNumber: formattedPhoneNumber,
-    variables: [...variables.value],
-  };
-  dataRows.value.push(rowData);
-
-  // Limpa os inputs após adicionar dados
-  phoneNumber.value = '';
-  variables.value = [];
-}
-
-function removeRow(index) {
-  dataRows.value.splice(index, 1);
-}
-
-function exportCSV() {
-  let csvContent = "data:text/csv;charset=utf-8,phone";
-  for (let i = 1; i <= variables.value.length; i++) {
-    csvContent += `,variable${i}`;
-  }
-  csvContent += "\n";
-
-  dataRows.value.forEach(row => {
-    const variables = row.variables.join(", ");
-    csvContent += `${row.phoneNumber},${variables}\n`;
-  });
-
-  const fileName = prompt("Insira o nome do arquivo:");
-  if (fileName) {
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `${fileName}.csv`);
-    document.body.appendChild(link);
-    link.click();
-  }
-}
-</script>
-
 <template>
-  <div class="container mt-5 d-flex flex-column justify-content-center align-items-center flex-column">
-    <div class="card p-4 d-block col-12 container-csv">
-      <h2 class="mb-4 text-center">Gerador de CSV</h2>
+  <div class="container mt-5 d-flex flex-column justify-content-center align-items-center">
+    <h2 class="mb-4 text-center text-light">Gerador Individual</h2>
+    <div class="card p-4 d-block col-8 container-csv">
 
       <div class="row">
         <div class="col-3 form-group">
@@ -109,14 +27,13 @@ function exportCSV() {
       </div>
 
       <div id="variables">
-        <div class="input-group mb-3" v-for="(variable, index) in variables" :key="index">
+        <div v-for="(variable, index) in variables" :key="index" class="input-group my-3">
           <div class="input-group-prepend">
-            <label class="input-group-text" :for="'variable' + (index + 1)"> Variável {{ index + 1 }}:</label>
+            <label class="input-group-text" :for="`variable${index + 1}`"> Variável {{ index + 1 }}:</label>
           </div>
-          <input type="text" class="form-control" :id="'variable' + (index + 1)" :value="variable"
+          <input type="text" class="form-control" :id="`variable${index + 1}`" :value="variable"
             @input="updateVariable($event.target.value, index)"
-            :placeholder="'Digite o valor da Variável ' + (index + 1)">
-
+            :placeholder="`Digite o valor da Variável ${index + 1}`">
           <div class="input-group-append">
             <button class="btn btn-danger" type="button" @click="removeVariable(index)"><i
                 class="bi bi-trash"></i></button>
@@ -125,57 +42,114 @@ function exportCSV() {
       </div>
 
       <div class="mt-3 mx-1">
-        <button class="btn btn-primary" @click="addVariable"><i class="bi bi-plus-lg"></i> Variável</button>
-        <button class="btn btn-success ml-1" @click="addData">Salvar Cliente</button>
+        <button class="btn btn-primary m-1" @click="addVariable"><i class="bi bi-plus-lg"></i> Variável</button>
+        <button class="btn btn-success m-1" @click="addData">Salvar Cliente</button>
       </div>
     </div>
-    <table class="table table-striped table-bordered mt-5 lista-contatos">
-      <thead class="thead-dark">
-        <tr>
-          <th scope="col">Número de Telefone</th>
-          <th scope="col">Variáveis</th>
-          <th scope="col" class="col-1">Excluir</th>
-        </tr>
-      </thead>
-      <tbody id="dataRows" class="text-light">
-        <tr v-for="(row, index) in dataRows" :key="index">
-          <td>{{ row.phoneNumber }}</td>
-          <td>{{ row.variables.join(", ") }}</td>
-          <td><button class="btn btn-danger btn-sm" @click="removeRow(index)"><i class="bi bi-trash"></i></button></td>
-        </tr>
-      </tbody>
-    </table>
-    <button class="btn btn-success exporta-arquivo" @click="exportCSV">Exportar CSV</button>
 
+    <div class="col-8">
+      <table class="table table-striped table-bordered mt-5 lista-contatos">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Número de Telefone</th>
+            <th scope="col">Variáveis</th>
+            <th scope="col" class="col-1">Excluir</th>
+          </tr>
+        </thead>
+        <tbody id="dataRows" class="text-light">
+          <tr v-for="(rowData, index) in tableData" :key="index">
+            <td>{{ rowData.phoneNumber }}</td>
+            <td>{{ rowData.variables.join(", ") }}</td>
+            <td><button class="btn btn-danger btn-sm" @click="removeRow(index)"><i class="bi bi-trash"></i></button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <button class="btn btn-success exporta-arquivo" @click="exportCSV">Exportar CSV</button>
+    </div>
   </div>
 </template>
 
-<style scoped>
-:root {
-  --opacity-dark: rgba(60, 60, 60, .5);
-}
+<script setup>
+import { ref } from 'vue';
 
-footer {
-  bottom: 0;
-}
+const countryCode = ref('55');
+const phoneNumber = ref('');
+const variables = ref([]);
+const tableData = ref([]);
 
-.container-csv {
-  border-radius: 15px;
-  background-color: var(--opacity-dark);
-}
+let variablesCount = 0;
 
-.lista-contatos {
-  background-color: var(--opacity-dark);
-}
+const addVariable = () => {
+  variablesCount++;
+  variables.value.push('');
+};
 
-.exporta-arquivo {
-  margin-bottom: 90px;
-}
+const removeVariable = (index) => {
+  variables.value.splice(index, 1);
+  variablesCount--;
+};
 
-select,
-input,
-input::placeholder {
-  background-color: var(--opacity-dark) !important;
-  color: rgb(240, 240, 240) !important;
-}
-</style>
+const updateVariable = (value, index) => {
+  variables.value[index] = value;
+};
+
+const validatePhoneNumber = (phoneNumber) => {
+  return /^\d{7,13}$/.test(phoneNumber.replace(/\s/g, ''));
+};
+
+const validateVariables = () => {
+  return variables.value.every(variable => variable.trim() !== '');
+};
+
+const addData = () => {
+  const variablesValid = validateVariables();
+  const phoneNumberValid = validatePhoneNumber(phoneNumber.value);
+
+  if (!phoneNumberValid) {
+    alert("Número de telefone inválido!");
+    return;
+  }
+
+  if (!variablesValid) {
+    alert("Preencha todos os campos das variáveis!");
+    return;
+  }
+
+  const formattedPhoneNumber = "+" + countryCode.value + phoneNumber.value;
+
+  tableData.value.push({
+    phoneNumber: formattedPhoneNumber,
+    variables: [...variables.value]
+  });
+
+  phoneNumber.value = '';
+  variables.value = [];
+};
+
+const removeRow = (index) => {
+  tableData.value.splice(index, 1);
+};
+
+const exportCSV = () => {
+  let csvContent = "data:text/csv;charset=utf-8,phone";
+  for (let i = 1; i <= variablesCount; i++) {
+    csvContent += `,variable${i}`;
+  }
+  csvContent += "\n";
+
+  tableData.value.forEach(row => {
+    csvContent += `${row.phoneNumber},${row.variables.join(",")}\n`;
+  });
+
+  const fileName = prompt("Insira o nome do arquivo:");
+  if (fileName) {
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `${fileName}.csv`);
+    document.body.appendChild(link);
+    link.click();
+  }
+};
+</script>
