@@ -1,181 +1,237 @@
-<script setup>
-import { ref } from 'vue';
-
-const countryCode = ref('55');
-const phoneNumber = ref('');
-const variables = ref([]);
-const dataRows = ref([]);
-
-function addVariable() {
-  variables.value.push('');
-}
-
-function removeVariable(index) {
-  variables.value.splice(index, 1);
-}
-
-function updateVariable(newValue, index) {
-  variables.value[index] = newValue;
-}
-
-function validatePhoneNumber(phoneNumber) {
-  return /^\d{7,13}$/.test(phoneNumber.replace(/\s/g, ''));
-}
-
-function validateVariables() {
-  return variables.value.every(variable => variable.trim() !== '');
-}
-
-function addData() {
-  const phoneNumberValid = validatePhoneNumber(phoneNumber.value);
-  const variablesValid = validateVariables();
-
-  if (!phoneNumberValid) {
-    alert("Número de telefone inválido!");
-    return;
-  }
-
-  if (!variablesValid) {
-    alert("Preencha todos os campos das variáveis!");
-    return;
-  }
-
-  const formattedPhoneNumber = `+${countryCode.value}${phoneNumber.value}`;
-  const rowData = {
-    phoneNumber: formattedPhoneNumber,
-    variables: [...variables.value],
-  };
-  dataRows.value.push(rowData);
-
-  // Limpa os inputs após adicionar dados
-  phoneNumber.value = '';
-  variables.value = [];
-}
-
-function removeRow(index) {
-  dataRows.value.splice(index, 1);
-}
-
-function exportCSV() {
-  let csvContent = "data:text/csv;charset=utf-8,phone";
-  for (let i = 1; i <= variables.value.length; i++) {
-    csvContent += `,variable${i}`;
-  }
-  csvContent += "\n";
-
-  dataRows.value.forEach(row => {
-    const variables = row.variables.join(", ");
-    csvContent += `${row.phoneNumber},${variables}\n`;
-  });
-
-  const fileName = prompt("Insira o nome do arquivo:");
-  if (fileName) {
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `${fileName}.csv`);
-    document.body.appendChild(link);
-    link.click();
-  }
-}
-</script>
-
 <template>
-  <div class="container mt-5 d-flex flex-column justify-content-center align-items-center flex-column">
-    <div class="card p-4 d-block col-12 container-csv">
-      <h2 class="mb-4 text-center">Gerador de CSV</h2>
+  <div class="container-fluid d-flex flex-column justify-content-center align-items-center flex-column">
 
-      <div class="row">
-        <div class="col-3 form-group">
-          <label for="countryCode"><strong>Código do País (DDD):</strong></label>
-          <select class="form-control" v-model="countryCode">
-            <option value="55">Brasil (+55)</option>
-            <option value="351">Portugal (+351)</option>
-            <option value="1">Estados Unidos (+1)</option>
-            <option value="86">China (+86)</option>
-            <option value="91">Índia (+91)</option>
-            <option value="7">Rússia (+7)</option>
-            <option value="81">Japão (+81)</option>
-            <option value="44">Reino Unido (+44)</option>
-            <option value="49">Alemanha (+49)</option>
-            <option value="33">França (+33)</option>
-          </select>
-        </div>
-
-        <div class="form-group col-9">
-          <label for="phoneNumber"><strong>Número de Telefone:</strong></label>
-          <input type="text" class="form-control" v-model="phoneNumber" placeholder="Exemplo: 14998765432">
-        </div>
+    <!-- Div para exibir variáveis selecionadas -->
+    <div class="col-lg-5">
+      <div class="d-flex justify-content-center text-light">
+        <h2 class="my-3">Gerador de disparo</h2>
       </div>
+      <div class="card py-3 d-flex flex-column align-items-center">
 
-      <div id="variables">
-        <div class="input-group mb-3" v-for="(variable, index) in variables" :key="index">
-          <div class="input-group-prepend">
-            <label class="input-group-text" :for="'variable' + (index + 1)"> Variável {{ index + 1 }}:</label>
-          </div>
-          <input type="text" class="form-control" :id="'variable' + (index + 1)" :value="variable"
-            @input="updateVariable($event.target.value, index)"
-            :placeholder="'Digite o valor da Variável ' + (index + 1)">
+        <h5 class="my-2">Adicionar nova variavel:</h5>
+        <div class="input-group w-75">
+          <input type="text" class="form-control" v-model="novaVariavel" placeholder="Nova Variável">
+          <button class="btn btn-primary" @click="adicionarNovaVariavel">+ Variável</button>
+        </div>
 
-          <div class="input-group-append">
-            <button class="btn btn-danger" type="button" @click="removeVariable(index)"><i
-                class="bi bi-trash"></i></button>
+        <h5 class="my-2">Variaveis mais utilizadas:</h5>
+        <div class="my-2">
+          <button class="btn btn-outline-primary mx-1" @click="adicionarVariavel('Nome Cliente')">Nome
+            Cliente</button>
+          <button class="btn btn-outline-primary mx-1"
+            @click="adicionarVariavel('Empreendimento')">Empreendimento</button>
+          <button class="btn btn-outline-primary mx-1" @click="adicionarVariavel('Menin Engenharia')">Menin
+            Engenharia</button>
+          <button class="btn btn-outline-primary mx-1" @click="adicionarVariavel('Construtora Menin')">Construtora
+            Menin</button>
+        </div>
+
+        <h5 class="my-2">Variáveis Adicionadas:</h5>
+        <div class="row mx-3">
+          <div class="bg-secondary rounded-pill col-auto d-flex m-1" v-for="(variavel, index) in variaveis"
+            :key="index">
+            <p class="m-auto text-light px-1" style="font-size: 16px;">{{ variavel }}</p>
+            <button class="btn btn-sm text-light" @click="removerVariavel(index)"><i class="bi bi-x"
+                style="font-size: 20px;"></i></button>
           </div>
         </div>
-      </div>
 
-      <div class="mt-3 mx-1">
-        <button class="btn btn-primary" @click="addVariable"><i class="bi bi-plus-lg"></i> Variável</button>
-        <button class="btn btn-success ml-1" @click="addData">Salvar Cliente</button>
+        <!-- Botão de exportar -->
+        <button class="btn btn-success my-2" @click="exportarCSV" :disabled="clientesSelecionados.length === 0">Exportar
+          Arquivo</button>
+
       </div>
     </div>
-    <table class="table table-striped table-bordered mt-5 lista-contatos">
-      <thead class="thead-dark">
-        <tr>
-          <th scope="col">Número de Telefone</th>
-          <th scope="col">Variáveis</th>
-          <th scope="col" class="col-1">Excluir</th>
-        </tr>
-      </thead>
-      <tbody id="dataRows" class="text-light">
-        <tr v-for="(row, index) in dataRows" :key="index">
-          <td>{{ row.phoneNumber }}</td>
-          <td>{{ row.variables.join(", ") }}</td>
-          <td><button class="btn btn-danger btn-sm" @click="removeRow(index)"><i class="bi bi-trash"></i></button></td>
-        </tr>
-      </tbody>
-    </table>
-    <button class="btn btn-success exporta-arquivo" @click="exportCSV">Exportar CSV</button>
+
+
+    <!-- Seção de Pesquisa por Nome -->
+    <div class="col-lg-5">
+
+      <!-- Barra de Pesquisa por Nome -->
+      <div class="row my-4">
+        <div class="col-9">
+          <label for="search">
+            <h5 class="text-light">Pesquisar por Nome:</h5>
+          </label>
+          <input class="form-control py-3 border-dark" type="text" v-model="search" @input="updateSearchResults"
+            placeholder="Digite o nome do cliente">
+
+          <!-- Lista de clientes -->
+          <div class="position-relative">
+            <ul class="list-group z-3 w-100 position-absolute" v-show="showSearchResults && searchResults.length > 0">
+              <li class="list-group-item z-3 w-100 d-flex justify-content-between"
+                v-for="(cliente, index) in searchResults" :key="index" @click="adicionarCliente(cliente)">
+                <strong>{{ cliente.fullName }}</strong> {{ cliente.empreendimento }}
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Filtro por empreendimento -->
+        <div class="col-3">
+          <label for="empreendimento">
+            <h5 class="text-light">Filtrar:</h5>
+          </label>
+          <select v-model="selectedEmpreendimento" @change="updateSearchResults" class="form-control py-3 border-dark">
+            <option value="">Todos</option>
+            <option v-for="empreendimento in empreendimentos" :key="empreendimento" :value="empreendimento">{{
+              empreendimento }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lista de Clientes Selecionados -->
+    <div class="col-lg-5 my-2">
+      <div class="d-flex justify-content-center text-light">
+        <h4>Clientes Selecionados</h4>
+      </div>
+      <div class="mb-2 clientes-container" style="max-height: 35vh; overflow-y: auto; overflow-x: hidden;">
+        <div class="row" v-for="(cliente, index) in clientesSelecionados" :key="index">
+          <div class="col-12">
+            <div class="card m-1">
+              <div class="d-flex flex-row align-items-center justify-content-between p-2">
+                <h5 class="card-title my-auto mx-0">{{ cliente.fullName }}</h5>
+                <p class="card-text my-auto">{{ cliente.phoneNumber }} <i class="bi bi-whatsapp"></i></p>
+                <p class="card-text my-auto">{{ cliente.empreendimento }} <i class="bi bi-building"></i></p>
+                <button class="btn btn-danger" @click="removerCliente(index)">Remover</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
   </div>
 </template>
 
-<style>
-:root {
-  --opacity-dark: rgba(60, 60, 60, .5);
+<style scoped>
+/* Estilo do Scroll da lista de Clientes */
+.clientes-container::-webkit-scrollbar {
+  width: 12px;
 }
 
-footer {
-  bottom: 0;
+.clientes-container::-webkit-scrollbar-thumb {
+  background: #bdbdbd;
+  border-radius: 8px;
 }
 
-.container-csv {
-  border-radius: 15px;
-  background-color: var(--opacity-dark);
-}
-
-.lista-contatos {
-  background-color: var(--opacity-dark);
-}
-
-.exporta-arquivo {
-  margin-bottom: 90px;
-}
-
-select,
-input,
-input::placeholder {
-  background-color: var(--opacity-dark) !important;
-  color: rgb(240, 240, 240) !important;
+.clientes-container::-webkit-scrollbar-thumb:hover {
+  background: #afafaf;
 }
 </style>
+
+
+
+<script setup>
+import { ref } from 'vue';
+import clientesTeste from '@/assets/clientes/clientesTeste.json';
+import clientesExemplo from '@/assets/clientes/clientesExemplo.json';
+import clientesBoulevard from '@/assets/clientes/clientesBoulevard.json';
+import clientesTerras1 from '@/assets/clientes/clientesTerras1.json';
+
+// Variáveis reativas
+const search = ref('');
+const searchResults = ref([]);
+const showSearchResults = ref(false);
+const clientesSelecionados = ref([]);
+const novaVariavel = ref('');
+const variaveis = ref([]);
+const selectedEmpreendimento = ref('');
+const empreendimentos = ref([
+  'Terras de São Paulo I',
+  'Boulevard',
+  'Outro Empreendimento 2'
+]);
+
+// Array reativo para armazenar os clientes do JSON
+const clientes = ref(clientesTeste.concat(clientesExemplo, clientesBoulevard, clientesTerras1));
+
+// Métodos
+const updateSearchResults = () => {
+  if (search.value) {
+    const termoPesquisa = search.value.toLowerCase();
+    searchResults.value = clientes.value.filter(cliente =>
+      cliente.fullName.toLowerCase().includes(termoPesquisa) &&
+      (selectedEmpreendimento.value ? cliente.empreendimento === selectedEmpreendimento.value : true)
+    );
+    showSearchResults.value = true;
+  } else {
+    searchResults.value = [];
+    showSearchResults.value = false;
+  }
+};
+
+
+
+
+
+
+
+
+
+
+const adicionarCliente = (cliente, empreendimento) => {
+  cliente.variaveis = [];
+  clientesSelecionados.value.push(cliente);
+  search.value = ''; // Limpa o campo de pesquisa após adicionar o cliente
+  showSearchResults.value = false; // Esconde a lista de sugestões
+};
+
+const removerCliente = (index) => {
+  clientesSelecionados.value.splice(index, 1);
+};
+
+const adicionarVariavel = (variavel) => {
+  variaveis.value.push(variavel);
+};
+
+const adicionarNovaVariavel = () => {
+  if (novaVariavel.value.trim() !== '') {
+    variaveis.value.push(novaVariavel.value.trim());
+    console.log(novaVariavel.value.trim())
+    console.log(variaveis.value)
+    novaVariavel.value = '';
+  }
+};
+
+const removerVariavel = (index) => {
+  variaveis.value.splice(index, 1);
+};
+
+
+
+const exportarCSV = () => {
+  const csvContent = "data:text/csv;charset=utf-8," +
+    "phone," + variaveis.value.map((variavel, index) => `variable${index + 1}`).join(',') + "\n" +
+    clientesSelecionados.value.map(cliente => {
+      const clienteData = [cliente.phoneNumber];
+      variaveis.value.forEach(variavel => {
+        if (variavel.toLowerCase() === 'nome cliente') {
+          clienteData.push(cliente.fullName.split(' ')[0]);
+        } else if (variavel.toLowerCase() === 'empreendimento') {
+          clienteData.push(cliente.empreendimento || '');
+        } else if (variavel.toLowerCase() === 'menin engenharia') {
+          clienteData.push('Menin Engenharia');
+        } else if (variavel.toLowerCase() === 'construtora menin') {
+          clienteData.push('Construtora Menin');
+        } else if (variavel.toLowerCase()) {
+          clienteData.push(variavel.toLowerCase() || '');
+        } else {
+          alert("Erro!")
+        }
+      });
+      return clienteData.join(',');
+    }).join("\n");
+  const encodedUri = encodeURI(csvContent);
+  const downloadName = prompt("Digite o nome do arquivo:")
+  const link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", downloadName + ".csv");
+  document.body.appendChild(link);
+  link.click();
+};
+
+
+
+</script>

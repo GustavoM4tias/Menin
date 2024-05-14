@@ -1,11 +1,13 @@
 <script setup>
 
-
 </script>
 <template>
   <nav class="navbar navbar-expand-lg bg-dark">
     <div class="container-fluid">
-      <a class="navbar-brand text-white mx-3" href="#"><h4>Menin</h4></a>
+      <a class="navbar-brand text-white mx-3" href="#">  
+      <h4 class="m-auto">
+    <img src="@/assets/img/menin.png" height="20px" class="mx-2 mb-1">Menin
+  </h4></a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
         aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -14,17 +16,17 @@
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-text">
             <a class="nav-link" href="#"> 
-              <router-link class="links-menu" to="/" >Gerador de CSV</router-link>
+              <router-link class="links-menu px-1" to="/" >Gerador I</router-link>
             </a>
           </li>
           <li class="nav-text">
             <a class="nav-link" href="#"> 
-              <router-link class="links-menu" to="/tela2" >Adicionar Cliente</router-link>
+              <router-link class="links-menu px-1" to="/tela2" >Gerador II</router-link>
             </a>
           </li>
           <li class="nav-text">
             <a class="nav-link" href="#"> 
-              <router-link class="links-menu" to="/tela3" >Editar Clientes</router-link>
+              <router-link class="links-menu px-1" to="/tela3" ><i class="bi bi-exclamation-triangle"></i></router-link>
             </a>
           </li>
         </ul>

@@ -1,208 +1,181 @@
+<script setup>
+import { ref } from 'vue';
+
+const countryCode = ref('55');
+const phoneNumber = ref('');
+const variables = ref([]);
+const dataRows = ref([]);
+
+function addVariable() {
+  variables.value.push('');
+}
+
+function removeVariable(index) {
+  variables.value.splice(index, 1);
+}
+
+function updateVariable(newValue, index) {
+  variables.value[index] = newValue;
+}
+
+function validatePhoneNumber(phoneNumber) {
+  return /^\d{7,13}$/.test(phoneNumber.replace(/\s/g, ''));
+}
+
+function validateVariables() {
+  return variables.value.every(variable => variable.trim() !== '');
+}
+
+function addData() {
+  const phoneNumberValid = validatePhoneNumber(phoneNumber.value);
+  const variablesValid = validateVariables();
+
+  if (!phoneNumberValid) {
+    alert("Número de telefone inválido!");
+    return;
+  }
+
+  if (!variablesValid) {
+    alert("Preencha todos os campos das variáveis!");
+    return;
+  }
+
+  const formattedPhoneNumber = `+${countryCode.value}${phoneNumber.value}`;
+  const rowData = {
+    phoneNumber: formattedPhoneNumber,
+    variables: [...variables.value],
+  };
+  dataRows.value.push(rowData);
+
+  // Limpa os inputs após adicionar dados
+  phoneNumber.value = '';
+  variables.value = [];
+}
+
+function removeRow(index) {
+  dataRows.value.splice(index, 1);
+}
+
+function exportCSV() {
+  let csvContent = "data:text/csv;charset=utf-8,phone";
+  for (let i = 1; i <= variables.value.length; i++) {
+    csvContent += `,variable${i}`;
+  }
+  csvContent += "\n";
+
+  dataRows.value.forEach(row => {
+    const variables = row.variables.join(", ");
+    csvContent += `${row.phoneNumber},${variables}\n`;
+  });
+
+  const fileName = prompt("Insira o nome do arquivo:");
+  if (fileName) {
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `${fileName}.csv`);
+    document.body.appendChild(link);
+    link.click();
+  }
+}
+</script>
+
 <template>
-  <div class="container-fluid d-flex flex-column justify-content-center align-items-center flex-column">
-    <!-- Seção de Pesquisa por Nome -->
-    <div class="row col-4">
-      <!-- Barra de Pesquisa por Nome -->
-      <div class="col-12 my-4">
-        <label for="search"><strong class="text-light">Pesquisar por Nome:</strong></label>
-        <input type="text" class="form-control" v-model="search" @input="updateSearchResults"
-          placeholder="Digite o nome do cliente">
-        <!-- Lista de sugestões de clientes -->
-        <div class="position-relative">
-          <ul class="list-group z-3 w-100 position-absolute" v-show="showSearchResults && searchResults.length > 0">
-            <li class="list-group-item z-3 w-100 d-flex justify-content-between" v-for="(cliente, empreendimento, index) in searchResults" :key="index"
-              @click="adicionarCliente(cliente, empreendimento)">
-              <strong>{{ cliente.fullName }}</strong> {{ cliente.empreendimento }}
-            </li>
-          </ul>
+  <div class="container mt-5 d-flex flex-column justify-content-center align-items-center flex-column">
+    <div class="card p-4 d-block col-12 container-csv">
+      <h2 class="mb-4 text-center">Gerador de CSV</h2>
+
+      <div class="row">
+        <div class="col-3 form-group">
+          <label for="countryCode"><strong>Código do País (DDD):</strong></label>
+          <select class="form-control" v-model="countryCode">
+            <option value="55">Brasil (+55)</option>
+            <option value="351">Portugal (+351)</option>
+            <option value="1">Estados Unidos (+1)</option>
+            <option value="86">China (+86)</option>
+            <option value="91">Índia (+91)</option>
+            <option value="7">Rússia (+7)</option>
+            <option value="81">Japão (+81)</option>
+            <option value="44">Reino Unido (+44)</option>
+            <option value="49">Alemanha (+49)</option>
+            <option value="33">França (+33)</option>
+          </select>
+        </div>
+
+        <div class="form-group col-9">
+          <label for="phoneNumber"><strong>Número de Telefone:</strong></label>
+          <input type="text" class="form-control" v-model="phoneNumber" placeholder="Exemplo: 14998765432">
         </div>
       </div>
-    </div>
 
-    <!-- Lista de Clientes Selecionados -->
-    <div class="container mt-4 mb-5">
-      <h2>Clientes Selecionados</h2>
-      <div class="mb-2">
-        <div class="row" v-for="(cliente, index) in clientesSelecionados" :key="index">
-          <div class="col-12">
-            <div class="card m-2">
-              <div class="d-flex flex-row justify-content-between p-3">
-                <h5 class="card-title">{{ cliente.fullName }}</h5>
-                <p class="card-text">{{ cliente.phoneNumber }} <i class="bi bi-whatsapp"></i></p>
-                <p class="card-text">{{ cliente.empreendimento }} <i class="bi bi-building"></i></p>
-                <button class="btn btn-danger" @click="removerCliente(index)">Remover</button>
-              </div>
-            </div>
+      <div id="variables">
+        <div class="input-group mb-3" v-for="(variable, index) in variables" :key="index">
+          <div class="input-group-prepend">
+            <label class="input-group-text" :for="'variable' + (index + 1)"> Variável {{ index + 1 }}:</label>
           </div>
-        </div>
-      </div>
-    </div>
+          <input type="text" class="form-control" :id="'variable' + (index + 1)" :value="variable"
+            @input="updateVariable($event.target.value, index)"
+            :placeholder="'Digite o valor da Variável ' + (index + 1)">
 
-    <!-- Opções de Variáveis -->
-    <div class="col-4">
-      <div class="card">
-        <div class="card-body">
-          <div v-for="(opcao, index) in opcoesVariaveis" :key="index">
-            <button class="btn btn-outline-secondary mr-2 mb-2" @click="adicionarOpcaoVariavel(opcao.label)">{{ opcao.label }}</button>
-            <div class="btn-group" v-if="opcao.checked" role="group" aria-label="Basic example">
-              <button type="button" class="btn btn-secondary" @click="moveCheckVariavelUp(index)" :disabled="index === 0">&#8679;</button>
-              <button type="button" class="btn btn-secondary" @click="moveCheckVariavelDown(index)" :disabled="index === opcoesVariaveis.length - 1">&#8681;</button>
-            </div>
+          <div class="input-group-append">
+            <button class="btn btn-danger" type="button" @click="removeVariable(index)"><i
+                class="bi bi-trash"></i></button>
           </div>
         </div>
       </div>
 
-      <div class="input-group mt-3">
-        <input type="text" class="form-control" v-model="novaVariavel" placeholder="Nova Variável">
-        <button class="btn btn-primary" @click="adicionarVariavel">Adicionar</button>
-      </div>
-
-      <div v-if="variaveisAdicionadas.length > 0" class="mt-3">
-        <div class="card" v-for="(variavel, index) in variaveisAdicionadas" :key="index">
-          <div class="card-body d-flex justify-content-between align-items-center">
-            <p class="card-text">{{ variavel }}</p>
-            <div class="btn-group" role="group" aria-label="Basic example">
-              <button type="button" class="btn btn-secondary" @click="moveVariavelUp(index)" :disabled="index === 0">&#8679;</button>
-              <button type="button" class="btn btn-secondary" @click="moveVariavelDown(index)" :disabled="index === variaveisAdicionadas.length - 1">&#8681;</button>
-              <button class="btn btn-danger" @click="removerVariavel(index)">X</button>
-            </div>
-          </div>
-        </div>
+      <div class="mt-3 mx-1">
+        <button class="btn btn-primary" @click="addVariable"><i class="bi bi-plus-lg"></i> Variável</button>
+        <button class="btn btn-success ml-1" @click="addData">Salvar Cliente</button>
       </div>
     </div>
+    <table class="table table-striped table-bordered mt-5 lista-contatos">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Número de Telefone</th>
+          <th scope="col">Variáveis</th>
+          <th scope="col" class="col-1">Excluir</th>
+        </tr>
+      </thead>
+      <tbody id="dataRows" class="text-light">
+        <tr v-for="(row, index) in dataRows" :key="index">
+          <td>{{ row.phoneNumber }}</td>
+          <td>{{ row.variables.join(", ") }}</td>
+          <td><button class="btn btn-danger btn-sm" @click="removeRow(index)"><i class="bi bi-trash"></i></button></td>
+        </tr>
+      </tbody>
+    </table>
+    <button class="btn btn-success exporta-arquivo" @click="exportCSV">Exportar CSV</button>
 
-    <!-- Botão de exportar -->
-    <div class="col-4">
-      <button class="btn btn-success" @click="exportarCSV" :disabled="clientesSelecionados.length === 0">Exportar CSV</button>
-    </div>
   </div>
 </template>
 
-<script setup>
-import { ref } from 'vue';
-import clientesData from '@/assets/clientes/clientes.json';
+<style scoped>
+:root {
+  --opacity-dark: rgba(60, 60, 60, .5);
+}
 
-// Variáveis reativas
-const search = ref('');
-const searchResults = ref([]);
-const showSearchResults = ref(false);
-const clientesSelecionados = ref([]);
-const novaVariavel = ref('');
-const variaveisAdicionadas = ref([]);
-const opcoesVariaveis = ref([
-  { label: 'Nome', checked: false },
-  { label: 'Empreendimento', checked: false },
-  { label: 'Menin Engenharia', checked: false }
-]);
+footer {
+  bottom: 0;
+}
 
-// Array reativo para armazenar os clientes do JSON
-const clientes = ref(clientesData);
+.container-csv {
+  border-radius: 15px;
+  background-color: var(--opacity-dark);
+}
 
-// Métodos
-const updateSearchResults = () => {
-  if (search.value) {
-    const termoPesquisa = search.value.toLowerCase();
-    searchResults.value = clientes.value.filter(cliente =>
-      cliente.fullName.toLowerCase().includes(termoPesquisa)
-    );
-    showSearchResults.value = true;
-  } else {
-    searchResults.value = [];
-    showSearchResults.value = false;
-  }
-};
+.lista-contatos {
+  background-color: var(--opacity-dark);
+}
 
-const adicionarCliente = (cliente) => {
-  clientesSelecionados.value.push(cliente);
-  search.value = ''; // Limpa o campo de pesquisa após adicionar o cliente
-  showSearchResults.value = false; // Esconde a lista de sugestões
-};
+.exporta-arquivo {
+  margin-bottom: 90px;
+}
 
-const removerCliente = (index) => {
-  clientesSelecionados.value.splice(index, 1);
-};
-
-
-const adicionarOpcaoVariavel = (label) => {
-  if (!variaveisAdicionadas.value.includes(label)) {
-    variaveisAdicionadas.value.push(label);
-  }
-};
-
-const adicionarVariavel = () => {
-  if (novaVariavel.value.trim() !== '') {
-    variaveisAdicionadas.value.push(novaVariavel.value);
-    novaVariavel.value = ''; // Limpa o campo de nova variável após adicionar
-  }
-};
-
-const removerVariavel = (index) => {
-  variaveisAdicionadas.value.splice(index, 1);
-};
-
-const moveVariavelUp = (index) => {
-  if (index > 0) {
-    const temp = variaveisAdicionadas.value[index];
-    variaveisAdicionadas.value[index] = variaveisAdicionadas.value[index - 1];
-    variaveisAdicionadas.value[index - 1] = temp;
-  }
-};
-
-const moveVariavelDown = (index) => {
-  if (index < variaveisAdicionadas.value.length - 1) {
-    const temp = variaveisAdicionadas.value[index];
-    variaveisAdicionadas.value[index] = variaveisAdicionadas.value[index + 1];
-    variaveisAdicionadas.value[index + 1] = temp;
-  }
-};
-
-const moveCheckVariavelUp = (index) => {
-  if (index > 0) {
-    const temp = opcoesVariaveis.value[index];
-    opcoesVariaveis.value[index] = opcoesVariaveis.value[index - 1];
-    opcoesVariaveis.value[index - 1] = temp;
-  }
-};
-
-const moveCheckVariavelDown = (index) => {
-  if (index < opcoesVariaveis.value.length - 1) {
-    const temp = opcoesVariaveis.value[index];
-    opcoesVariaveis.value[index] = opcoesVariaveis.value[index + 1];
-    opcoesVariaveis.value[index + 1] = temp;
-  }
-};
-
-const exportarCSV = () => {
-  if (clientesSelecionados.length === 0) return; // Retorna se não houver clientes selecionados
-  
-  let csvContent = 'phone';
-  let variaveisCount = 0;
-  opcoesVariaveis.value.forEach((opcao, index) => {
-    if (opcao.checked) {
-      variaveisCount++;
-      csvContent += `,variable${variaveisCount}`;
-    }
-  });
-  csvContent += '\n';
-
-  // Solicitar o nome do documento
-  const nomeDocumento = prompt("Por favor, insira o nome do documento:");
-
-  csvContent += clientesSelecionados.value.map(cliente => {
-    let content = cliente.phoneNumber;
-    opcoesVariaveis.value.forEach(opcao => {
-      if (opcao.checked) {
-        content += `,${opcao.label === 'Nome' ? cliente.fullName.split(' ')[0] : cliente[opcao.label.toLowerCase()]}`;
-      }
-    });
-    return content;
-  }).join('\n');
-
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const link = document.createElement('a');
-  link.href = window.URL.createObjectURL(blob);
-  link.setAttribute('download', `${nomeDocumento}.csv`);
-  document.body.appendChild(link);
-  link.click();
-};
-</script>
+select,
+input,
+input::placeholder {
+  background-color: var(--opacity-dark) !important;
+  color: rgb(240, 240, 240) !important;
+}
+</style>
