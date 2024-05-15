@@ -137,6 +137,10 @@ import clientesExemplo from '@/assets/clientes/clientesExemplo.json';
 import clientesBoulevard from '@/assets/clientes/clientesBoulevard.json';
 import clientesTerras1 from '@/assets/clientes/clientesTerras1.json';
 import clientesMontana from '@/assets/clientes/clientesMontana.json';
+import clientesBuritis from '@/assets/clientes/clientesBuritis.json';
+import clientesTresMarias from '@/assets/clientes/clientesTresMarias.json';
+import clientesAguaBranca from '@/assets/clientes/clientesAguaBranca.json';
+import clientesMoov from '@/assets/clientes/clientesMoov.json';
 
 // Variáveis reativas
 const search = ref('');
@@ -149,11 +153,17 @@ const selectedEmpreendimento = ref('');
 const empreendimentos = ref([
   'Terras de São Paulo I',
   'Boulevard',
-  'Montana'
+  'Montana',
+  'Buritis',
+  'Três Marias',
+  'Água Branca',
+  'Moov',
+  'teste',
+  'teste'
 ]);
 
 // Array reativo para armazenar os clientes do JSON
-const clientes = ref(clientesTeste.concat(clientesExemplo, clientesBoulevard, clientesTerras1, clientesMontana));
+const clientes = ref(clientesTeste.concat(clientesExemplo, clientesBoulevard, clientesTerras1, clientesMontana, clientesBuritis, clientesTresMarias, clientesAguaBranca, clientesMoov));
 
 // Métodos
 const updateSearchResults = () => {

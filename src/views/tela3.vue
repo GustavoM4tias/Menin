@@ -5,7 +5,6 @@
 <script setup>
   // A string com as informações dos clientes
   const clientesString = `
-
   
   `;
 
