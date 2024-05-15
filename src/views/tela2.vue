@@ -1,11 +1,11 @@
 <template>
   <div class="container mt-5 d-flex flex-column justify-content-center align-items-center">
     <h2 class="mb-4 text-center text-light">Gerador Individual</h2>
-    <div class="card p-4 d-block col-8 container-csv">
+    <div class="card p-4 d-block col-lg-8 col-sm-12 col-md-12 container-csv">
 
       <div class="row">
         <div class="col-3 form-group">
-          <label for="countryCode"><strong>Código do País (DDD):</strong></label>
+          <label for="countryCode"><strong>DDD:</strong></label>
           <select class="form-control" v-model="countryCode">
             <option value="55">Brasil (+55)</option>
             <option value="351">Portugal (+351)</option>
@@ -47,7 +47,7 @@
       </div>
     </div>
 
-    <div class="col-8">
+    <div class="col-lg-8 col-sm-12 col-md-12">
       <table class="table table-striped table-bordered mt-5 lista-contatos">
         <thead class="thead-dark">
           <tr>

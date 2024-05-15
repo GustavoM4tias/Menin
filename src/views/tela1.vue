@@ -2,20 +2,22 @@
   <div class="container-fluid d-flex flex-column justify-content-center align-items-center flex-column">
 
     <!-- Div para exibir variáveis selecionadas -->
-    <div class="col-lg-5">
+    <div class="col-lg-6 col-md-10 col-sm-12">
       <div class="d-flex justify-content-center text-light">
         <h2 class="my-3">Gerador com Consulta</h2>
       </div>
       <div class="card py-3 d-flex flex-column align-items-center">
 
-        <h5 class="my-2">Adicionar nova variavel:</h5>
-        <div class="input-group w-75">
-          <input type="text" class="form-control" v-model="novaVariavel" placeholder="Nova Variável">
-          <button class="btn btn-primary" @click="adicionarNovaVariavel">+ Variável</button>
+        <div class="col-sm-11 col-md-10 col-lg-8 d-flex flex-column align-items-center">
+          <h5 class="my-2">Adicionar nova variavel:</h5>
+          <div class="input-group">
+            <input type="text" class="form-control" v-model="novaVariavel" placeholder="Nova Variável">
+            <button class="btn btn-primary" @click="adicionarNovaVariavel">+ Variável</button>
+          </div>
         </div>
 
         <h5 class="my-2">Variaveis mais utilizadas:</h5>
-        <div class="my-2">
+        <div class="my-2 mx-3 d-flex justify-content-center">
           <button class="btn btn-outline-primary mx-1" @click="adicionarVariavel('Nome Cliente')">Nome
             Cliente</button>
           <button class="btn btn-outline-primary mx-1"
@@ -45,7 +47,7 @@
 
 
     <!-- Seção de Pesquisa por Nome -->
-    <div class="col-lg-5">
+    <div class="col-lg-6 col-md-10 col-sm-12">
 
       <!-- Barra de Pesquisa por Nome -->
       <div class="row my-4">
@@ -57,8 +59,10 @@
             placeholder="Digite o nome do cliente">
 
           <!-- Lista de clientes -->
-          <div class="position-relative">
-            <ul class="list-group z-3 w-100 position-absolute" v-show="showSearchResults && searchResults.length > 0">
+          <div class="position-relative bg-primary">
+            <ul class="resultados list-group z-3 w-100 position-absolute"
+              style="max-height: 30vh !important; overflow-y: auto;"
+              v-show="showSearchResults && searchResults.length > 0">
               <li class="list-group-item z-3 w-100 d-flex justify-content-between"
                 v-for="(cliente, index) in searchResults" :key="index" @click="adicionarCliente(cliente)">
                 <strong>{{ cliente.fullName }}</strong> {{ cliente.empreendimento }}
@@ -82,11 +86,11 @@
     </div>
 
     <!-- Lista de Clientes Selecionados -->
-    <div class="col-lg-5 my-2">
+    <div class="col-lg-6 col-md-10 col-sm-12 mb-5">
       <div class="d-flex justify-content-center text-light">
         <h4>Clientes Selecionados</h4>
       </div>
-      <div class="mb-2 clientes-container" style="max-height: 35vh; overflow-y: auto; overflow-x: hidden;">
+      <div class="mb-5 clientes-container" style="max-height: 25vh; overflow-y: auto; overflow-x: hidden;">
         <div class="row" v-for="(cliente, index) in clientesSelecionados" :key="index">
           <div class="col-12">
             <div class="card m-1">
@@ -107,15 +111,18 @@
 
 <style scoped>
 /* Estilo do Scroll da lista de Clientes */
+.resultados::-webkit-scrollbar,
 .clientes-container::-webkit-scrollbar {
   width: 12px;
 }
 
+.resultados::-webkit-scrollbar-thumb,
 .clientes-container::-webkit-scrollbar-thumb {
   background: #bdbdbd;
   border-radius: 8px;
 }
 
+.resultados::-webkit-scrollbar-thumb:hover,
 .clientes-container::-webkit-scrollbar-thumb:hover {
   background: #afafaf;
 }
@@ -129,6 +136,7 @@ import clientesTeste from '@/assets/clientes/clientesTeste.json';
 import clientesExemplo from '@/assets/clientes/clientesExemplo.json';
 import clientesBoulevard from '@/assets/clientes/clientesBoulevard.json';
 import clientesTerras1 from '@/assets/clientes/clientesTerras1.json';
+import clientesMontana from '@/assets/clientes/clientesMontana.json';
 
 // Variáveis reativas
 const search = ref('');
@@ -141,26 +149,34 @@ const selectedEmpreendimento = ref('');
 const empreendimentos = ref([
   'Terras de São Paulo I',
   'Boulevard',
-  'Outro Empreendimento 2'
+  'Montana'
 ]);
 
 // Array reativo para armazenar os clientes do JSON
-const clientes = ref(clientesTeste.concat(clientesExemplo, clientesBoulevard, clientesTerras1));
+const clientes = ref(clientesTeste.concat(clientesExemplo, clientesBoulevard, clientesTerras1, clientesMontana));
 
 // Métodos
 const updateSearchResults = () => {
   if (search.value) {
     const termoPesquisa = search.value.toLowerCase();
-    searchResults.value = clientes.value.filter(cliente =>
-      cliente.fullName.toLowerCase().includes(termoPesquisa) &&
+    const filteredResults = clientes.value.filter(cliente =>
+      cliente.fullName.toLowerCase().startsWith(termoPesquisa) &&
       (selectedEmpreendimento.value ? cliente.empreendimento === selectedEmpreendimento.value : true)
     );
-    showSearchResults.value = true;
+
+    if (filteredResults.length > 0) {
+      searchResults.value = filteredResults;
+      showSearchResults.value = true;
+    } else {
+      searchResults.value = [];
+      showSearchResults.value = false;
+    }
   } else {
     searchResults.value = [];
     showSearchResults.value = false;
   }
 };
+
 
 
 
