@@ -76,7 +76,8 @@
           <label for="empreendimento">
             <h5 class="text-light">Filtrar:</h5>
           </label>
-          <select v-model="selectedEmpreendimento" @change="updateSearchResults" class="form-control py-3 border-dark">
+          <select v-model="selectedEmpreendimento" @change="updateSearchResults"
+            class="form-control py-3 border-dark select-scroll">
             <option value="">Todos</option>
             <option v-for="empreendimento in empreendimentos" :key="empreendimento" :value="empreendimento">{{
               empreendimento }}</option>
@@ -128,20 +129,34 @@
 }
 </style>
 
-
-
 <script setup>
 import { ref } from 'vue';
-import clientesTeste from '@/assets/clientes/clientesTeste.json';
-import clientesExemplo from '@/assets/clientes/clientesExemplo.json';
-import clientesBoulevard from '@/assets/clientes/clientesBoulevard.json';
-import clientesTerras1 from '@/assets/clientes/clientesTerras1.json';
-import clientesMontana from '@/assets/clientes/clientesMontana.json';
-import clientesBuritis from '@/assets/clientes/clientesBuritis.json';
-import clientesTresMarias from '@/assets/clientes/clientesTresMarias.json';
+import clientesAdhara from '@/assets/clientes/clientesAdhara.json';
 import clientesAguaBranca from '@/assets/clientes/clientesAguaBranca.json';
+import clientesBomRetiro from '@/assets/clientes/clientesBomRetiro.json';
+import clientesBoulevard from '@/assets/clientes/clientesBoulevard.json';
+import clientesBuritis from '@/assets/clientes/clientesBuritis.json';
+import clientesConcept from '@/assets/clientes/clientesConcept.json';
+import clientesFirenze from '@/assets/clientes/clientesFirenze.json';
+import clientesItalia from '@/assets/clientes/clientesItalia.json';
+import cliestesJardimDosLirios from '@/assets/clientes/cliestesJardimDosLirios.json';
+import clientesJardimMarina from '@/assets/clientes/clientesJardimMarina.json';
+import clientesMaia from '@/assets/clientes/clientesMaia.json';
+import clientesMond from '@/assets/clientes/clientesMond.json';
 import clientesMoov from '@/assets/clientes/clientesMoov.json';
+import clientesMoradaDoSol from '@/assets/clientes/clientesMoradaDoSol.json';
+import clientesMonaco from '@/assets/clientes/clientesMonaco.json';
+import clientesMontana from '@/assets/clientes/clientesMontana.json';
 import clientesMurano from '@/assets/clientes/clientesMurano.json';
+import clientesNovaMarilia from '@/assets/clientes/clientesNovaMarilia.json';
+import clientesResidencialDoBosque from '@/assets/clientes/clientesResidencialDoBosque.json';
+import clientesResidencialDosIpes from '@/assets/clientes/clientesResidencialDosIpes.json';
+import clientesSantaMadalena from '@/assets/clientes/clientesSantaMadalena.json';;
+import clientesSoul from '@/assets/clientes/clientesSoul.json';
+import clientesTresMarias from '@/assets/clientes/clientesTresMarias.json';
+import clientesTerras from '@/assets/clientes/clientesTerras.json';
+import clientesUrban from '@/assets/clientes/clientesUrban.json';
+import clientesWish from '@/assets/clientes/clientesWish.json';
 
 // Variáveis reativas
 const search = ref('');
@@ -152,22 +167,47 @@ const novaVariavel = ref('');
 const variaveis = ref([]);
 const selectedEmpreendimento = ref('');
 const empreendimentos = ref([
-  'Terras de São Paulo I',
-  'Boulevard',
-  'Montana',
-  'Buritis',
-  'Três Marias',
+  'Adhara',
   'Água Branca',
+  'Bom Retiro',
+  'Boulevard',
+  'Buritis',
+  'Concept',
+  'Firenze',
+  'Itália',
+  'Jardim dos Lírios',
+  'Jardim Marina',
+  'Maia',
+  'Mond',
   'Moov',
-  'Murâno',
-  'teste'
+  'Morada do Sol',
+  'Monâco',
+  'Montana',
+  'Murano',
+  'Nova Marília',
+  'Residencial do Bosque',
+  'Residencial dos Ipês',
+  'Santa Madalena',
+  'Soul',
+  'Três Marias',
+  'Terras de São Paulo I',
+  'Urban',
+  'Wish'
 ]);
 
 // Array reativo para armazenar os clientes do JSON
-const clientes = ref(clientesTeste.concat(clientesExemplo, clientesBoulevard, clientesTerras1, clientesMontana, clientesBuritis, clientesTresMarias, clientesAguaBranca, clientesMoov, clientesMurano));
+const clientes = ref(clientesAdhara.concat(clientesAguaBranca, clientesBomRetiro, clientesBoulevard, clientesBuritis, clientesConcept, clientesFirenze, clientesItalia, cliestesJardimDosLirios, clientesJardimMarina, clientesMaia, clientesMond, clientesMoov, clientesMoradaDoSol, clientesMonaco, clientesMontana, clientesMurano, clientesNovaMarilia, clientesResidencialDoBosque, clientesResidencialDosIpes, clientesSoul, clientesSantaMadalena, clientesTresMarias, clientesTerras, clientesUrban, clientesWish));
+
+
+// Calculando o total de clientes
+const totalClientes = ref(0);
+totalClientes.value = clientes.value.length
+console.log(totalClientes.value)
+                      
 
 // Métodos
 const updateSearchResults = () => {
+
   if (search.value) {
     const termoPesquisa = search.value.toLowerCase();
     const filteredResults = clientes.value.filter(cliente =>
@@ -187,12 +227,6 @@ const updateSearchResults = () => {
     showSearchResults.value = false;
   }
 };
-
-
-
-
-
-
 
 
 
