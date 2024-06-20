@@ -1,64 +1,15 @@
 <template>
   <div class="container-fluid d-flex flex-column justify-content-center align-items-center flex-column">
 
-    <!-- Div para exibir variáveis selecionadas -->
-    <div class="col-lg-6 col-md-10 col-sm-12">
-      <div class="d-flex justify-content-center text-light">
-        <h2 class="my-3">Gerador com Consulta</h2>
-      </div>
-      <div class="card py-3 d-flex flex-column align-items-center">
+    <div class="container p-5 d-flex">
+      <div class="card-1 col-lg-6 col-12 p-5 m-auto">
+        <h1 class="text-center fs-2 fw-bold">Gerador de Disparo</h1>
 
-        <div class="col-sm-11 col-md-10 col-lg-8 d-flex flex-column align-items-center">
-          <h5 class="my-2">Adicionar nova variavel:</h5>
-          <div class="input-group">
-            <input type="text" class="form-control" v-model="novaVariavel" placeholder="Nova Variável">
-            <button class="btn btn-primary" @click="adicionarNovaVariavel">+ Variável</button>
-          </div>
-        </div>
-
-        <h5 class="my-2">Variaveis mais utilizadas:</h5>
-        <div class="my-2 mx-3 d-flex justify-content-center">
-          <button class="btn btn-outline-primary mx-1" @click="adicionarVariavel('Nome Cliente')">Nome
-            Cliente</button>
-          <button class="btn btn-outline-primary mx-1"
-            @click="adicionarVariavel('Empreendimento')">Empreendimento</button>
-          <button class="btn btn-outline-primary mx-1" @click="adicionarVariavel('Menin Engenharia')">Menin
-            Engenharia</button>
-          <button class="btn btn-outline-primary mx-1" @click="adicionarVariavel('Construtora Menin')">Construtora
-            Menin</button>
-        </div>
-
-        <h5 class="my-2">Variáveis Adicionadas:</h5>
-        <div class="row mx-3">
-          <div class="bg-secondary rounded-pill col-auto d-flex m-1" v-for="(variavel, index) in variaveis"
-            :key="index">
-            <p class="m-auto text-light px-1" style="font-size: 16px;">{{ variavel }}</p>
-            <button class="btn btn-sm text-light" @click="removerVariavel(index)"><i class="bi bi-x"
-                style="font-size: 20px;"></i></button>
-          </div>
-        </div>
-
-        <!-- Botão de exportar -->
-        <button class="btn btn-success my-2" @click="exportarCSV" :disabled="clientesSelecionados.length === 0">Exportar
-          Arquivo</button>
-
-      </div>
-    </div>
-
-
-    <!-- Seção de Pesquisa por Nome -->
-    <div class="col-lg-6 col-md-10 col-sm-12">
-
-      <!-- Barra de Pesquisa por Nome -->
-      <div class="row my-4">
-        <div class="col-9">
-          <label for="search">
-            <h5 class="text-light">Pesquisar por Nome:</h5>
-          </label>
+        <div class="inputs py-3">
+          <label class="mt-2">Pesquisar por Nome:</label>
           <input class="form-control py-3 border-dark" type="text" v-model="search" @input="updateSearchResults"
             placeholder="Digite o nome do cliente">
 
-          <!-- Lista de clientes -->
           <div class="position-relative bg-primary">
             <ul class="resultados list-group z-3 w-100 position-absolute"
               style="max-height: 30vh !important; overflow-y: auto;"
@@ -69,13 +20,8 @@
               </li>
             </ul>
           </div>
-        </div>
 
-        <!-- Filtro por empreendimento -->
-        <div class="col-3">
-          <label for="empreendimento">
-            <h5 class="text-light">Filtrar:</h5>
-          </label>
+          <label class="mt-3">Filtrar:</label>
           <select v-model="selectedEmpreendimento" @change="updateSearchResults"
             class="form-control py-3 border-dark select-scroll">
             <option value="">Todos</option>
@@ -83,31 +29,70 @@
               empreendimento }}</option>
           </select>
         </div>
-      </div>
-    </div>
 
-    <!-- Lista de Clientes Selecionados -->
-    <div class="col-lg-6 col-md-10 col-sm-12 mb-5">
-      <div class="d-flex justify-content-center text-light">
-        <h4>Clientes Selecionados</h4>
+
+        <div class="col-12">
+          <h5 class="my-3">Adicionar nova variavel:</h5>
+          <div class="input-group">
+            <input type="text" class="form-control py-3" v-model="novaVariavel" placeholder="Nova Variável">
+            <button class="btn btn-primary" @click="adicionarNovaVariavel">+ Variável</button>
+          </div>
+        </div>
+
+        <h5 class="my-3">Variaveis mais utilizadas:</h5>
+        <div class="my-1 mx-2 col-12 d-flex justify-content-center">
+          <button class="btn btn-outline-primary mx-1" @click="adicionarVariavel('Nome Cliente')">Nome
+            Cliente</button>
+          <button class="btn btn-outline-primary mx-1"
+            @click="adicionarVariavel('Empreendimento')">Empreendimento</button>
+          <button class="btn btn-outline-primary mx-1" @click="adicionarVariavel('Menin Engenharia')">Menin
+            Engenharia</button>
+          <button class="btn btn-outline-primary mx-1" @click="adicionarVariavel('Construtora Menin')">Construtora
+            Menin</button>
+        </div>
+
+        <h5 class="my-3">Variáveis Adicionadas:</h5>
+        <div class="row mx-1">
+          <div class="bg-secondary rounded-pill col-auto d-flex m-1" v-for="(variavel, index) in variaveis"
+            :key="index">
+            <p class="m-auto text-light px-1" style="font-size: 16px;">{{ variavel }}</p>
+            <button class="btn btn-sm text-light" @click="removerVariavel(index)"><i class="bi bi-x"
+                style="font-size: 20px;"></i></button>
+          </div>
+        </div>
       </div>
-      <div class="mb-5 clientes-container" style="max-height: 25vh; overflow-y: auto; overflow-x: hidden;">
-        <div class="row" v-for="(cliente, index) in clientesSelecionados" :key="index">
-          <div class="col-12">
-            <div class="card m-1">
-              <div class="d-flex flex-row align-items-center justify-content-between p-2">
-                <h5 class="card-title my-auto mx-0">{{ cliente.fullName }}</h5>
-                <p class="card-text my-auto">{{ cliente.phoneNumber }} <i class="bi bi-whatsapp"></i></p>
-                <p class="card-text my-auto">{{ cliente.empreendimento }} <i class="bi bi-building"></i></p>
-                <button class="btn btn-danger" @click="removerCliente(index)">Remover</button>
+
+      <div class="card-2 col-lg-6 col-12 p-5 m-auto">
+        <h4 class="text-center fw-bold fs-2 mb-5">Clientes Selecionados</h4>
+        <div class="mb-3 clientes-container" style="max-height: 75%; overflow-y: auto; overflow-x: hidden;">
+          <div class="row" v-for="(cliente, index) in clientesSelecionados" :key="index">
+            <div class="col-12">
+              <div class="card m-1">
+                <div class="d-flex flex-row align-items-center justify-content-between p-2">
+                  <h5 class="card-title my-auto mx-0">{{ cliente.fullName }}</h5>
+                  <p class="card-text my-auto">{{ cliente.phoneNumber }} <i class="bi bi-whatsapp"></i></p>
+                  <p class="card-text my-auto">{{ cliente.empreendimento }} <i class="bi bi-building"></i></p>
+                  <button class="btn btn-danger" @click="removerCliente(index)">Remover</button>
+                </div>
               </div>
             </div>
           </div>
         </div>
+
+        <div class="text-center">
+          <button class="btn btn-success my-1" @click="exportarCSV"
+            :disabled="clientesSelecionados.length === 0">Exportar Arquivo</button>
+
+        </div>
       </div>
+
+
+
     </div>
 
   </div>
+
+
 </template>
 
 <style scoped>
@@ -126,6 +111,36 @@
 .resultados::-webkit-scrollbar-thumb:hover,
 .clientes-container::-webkit-scrollbar-thumb:hover {
   background: #afafaf;
+}
+
+.card-1,
+.card-2 {
+  background-color: white;
+  height: 75vh;
+  border: 1px solid gray;
+}
+
+.card-1 {
+  border-radius: 20px 0 0 20px;
+}
+
+.card-2 {
+  border-radius: 0 20px 20px 0;
+}
+
+
+@media screen and (width < 900px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .card-1 {
+    border-radius: 20px 20px 0 0;
+  }
+
+  .card-2 {
+    border-radius: 0 0 20px 20px;
+  }
 }
 </style>
 
@@ -203,7 +218,7 @@ const clientes = ref(clientesAdhara.concat(clientesAguaBranca, clientesBomRetiro
 const totalClientes = ref(0);
 totalClientes.value = clientes.value.length
 console.log(totalClientes.value)
-                      
+
 
 // Métodos
 const updateSearchResults = () => {
