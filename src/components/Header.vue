@@ -4,7 +4,7 @@
 
 <template> 
 
-<nav class="navbar navbar-expand-lg">
+<nav class="navbar z-3 navbar-expand-lg">
   <div class="container-fluid">
     <img src="../assets/img/menin.png" alt="" width="40">
     <a class="fw-bolder mx-3 navbar-brand">Menin</a>
@@ -40,6 +40,10 @@
 
 .navbar {
   background-color: var(--color-blue-1);
+  width: 100%;
+  position: fixed;
+  top: 0;
+
 }
 
 .dropdown-menu {
