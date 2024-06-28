@@ -38,12 +38,15 @@
 
 <style scoped>
 
+* {
+  color: white!important;
+}
+
 .navbar {
   background-color: var(--color-blue-1);
   width: 100%;
   position: fixed;
   top: 0;
-
 }
 
 .dropdown-menu {

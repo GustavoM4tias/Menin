@@ -89,6 +89,15 @@ option {
   width: 150px;
 }
 
+.card-1 {
+  background-color: var(--color-lightblue-4);
+}
+
+.container-fluid {
+  background-color: var(--color-blue-4);
+
+}
+
 /* Estilo do Scroll da lista de Clientes */
 .resultados::-webkit-scrollbar,
 .clientes-container::-webkit-scrollbar {
@@ -106,19 +115,8 @@ option {
   background: #afafaf;
 }
 
-.card-1 {
-  background-color: var(--color-lightblue-4);
-}
-
 
 @media screen and (width < 900px) {
-  .container {
-    flex-direction: column;
-  }
-
-  .card-1 {
-    border-radius: 10px 10px 0 0;
-  }
 }
 </style>
 
