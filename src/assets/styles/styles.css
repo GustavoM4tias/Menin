@@ -2,3 +2,10 @@
 FIGMA
 https://www.figma.com/design/3RmLkkDM5Rj3lkcxlZE6aI/Untitled?node-id=0-1&t=GY8UuYd8YixXI0MP-0
 */
+
+
+* {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 500;
+    color: rgb(230, 230, 230)!important;
+}
