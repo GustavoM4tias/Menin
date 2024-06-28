@@ -27,25 +27,25 @@
           </div>
         </div>
         <div class="col-12 my-4">
-          <h1 class="text-center fs-2 fw-bold">Variaveis</h1>
+          <h1 class="text-center fs-5">Adicionar Variáveis</h1>
           <div class="input-group">
             <input type="text" class="form-control py-3" v-model="novaVariavel" placeholder="Nova Variável">
             <button class="btn btn-light border" @click="adicionarNovaVariavel">+ Variável</button>
           </div>
           <div class="col-12 d-flex justify-content-center mt-4">
-            <button class="btn btn-outline-light fw-bold mx-lg-3 mx-1" @click="adicionarVariavel('Nome Cliente')">Nome
+            <button class="btn btn-outline-dark fw-bold mx-lg-3 mx-1" @click="adicionarVariavel('Nome Cliente')">Nome
               Cliente</button>
-            <button class="btn btn-outline-light fw-bold mx-lg-3 mx-1"
+            <button class="btn btn-outline-dark fw-bold mx-lg-3 mx-1"
               @click="adicionarVariavel('Empreendimento')">Empreendimento</button>
-            <button class="btn btn-outline-light fw-bold mx-lg-3 mx-1" @click="adicionarVariavel('Menin Engenharia')">Menin
+            <button class="btn btn-outline-dark fw-bold mx-lg-3 mx-1" @click="adicionarVariavel('Menin Engenharia')">Menin
               Engenharia</button>
-            <button class="btn btn-outline-light fw-bold mx-lg-3 mx-1"
+            <button class="btn btn-outline-dark fw-bold mx-lg-3 mx-1"
               @click="adicionarVariavel('Construtora Menin')">Construtora
               Menin</button>
           </div>
         </div>
         <div class="row mx-2 mb-3">
-          <h5 class="mb-3">Variáveis Adicionadas:</h5>
+          <h5 class="mb-3 text-center">Variáveis Adicionadas:</h5>
           <div class="bg-secondary rounded-pill col-auto d-flex m-1" v-for="(variavel, index) in variaveis"
             :key="index">
             <p class="m-auto text-light px-1" style="font-size: 16px;">{{ variavel }}</p>
@@ -81,6 +81,15 @@
 
 <style scoped>
 
+select {
+  transition: .3s;
+}
+
+select:hover {
+  background-color: rgb(210, 210, 210);
+  transition: .3s;
+}
+
 option {
   text-align: center;
 }
@@ -90,12 +99,20 @@ option {
 }
 
 .card-1 {
-  background-color: var(--color-lightblue-4);
+  background-color: rgb(245, 245, 245);
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, .3);
+}
+
+input {
+  box-shadow: 4px 8px 0px inset rgba(150, 150, 150, .3), 0px 0px 5px rgba(0, 0, 0, .1);
+}
+
+input:hover {
+  box-shadow: 2px 4px 0px inset rgba(150, 150, 150, .4), 0px 0px 18px rgba(0, 0, 0, .1);
 }
 
 .container-fluid {
-  background-color: var(--color-blue-4);
-
+  background-color: rgb(245, 245, 245);
 }
 
 /* Estilo do Scroll da lista de Clientes */
