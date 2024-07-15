@@ -1,7 +1,7 @@
 <template>
     <div class="container-fluid d-flex vh-100">
-      <div class="card-1 col-lg-8 col-12 p-5 m-auto d-flex flex-column justify-content-center rounded-4">
-        <div class="inputs">
+      <div class="card-1 col-lg-7 col-12 p-5 m-auto d-flex flex-column justify-content-center rounded-4">
+        <div class="inputs col-11 m-auto">
           <h1 class="text-center fs-2 fw-bold">Gerador de Disparo</h1>
           <div class="input-group">
             <input class="form-control py-3" type="text" v-model="search" @input="updateSearchResults"
@@ -26,13 +26,13 @@
             </ul>
           </div>
         </div>
-        <div class="col-12 my-4">
-          <h1 class="text-center fs-5">Adicionar Variáveis</h1>
+        <div class="col-11 my-4 m-auto">
+          <h1 class="text-center fs-5 fw-bold">Adicionar Variáveis</h1>
           <div class="input-group">
             <input type="text" class="form-control py-3" v-model="novaVariavel" placeholder="Nova Variável">
             <button class="btn btn-light border" @click="adicionarNovaVariavel">+ Variável</button>
           </div>
-          <div class="col-12 d-flex justify-content-center mt-4">
+          <div class="col-12 d-flex justify-content-around mt-4">
             <button class="btn btn-outline-dark fw-bold mx-lg-3 mx-1" @click="adicionarVariavel('Nome Cliente')">Nome
               Cliente</button>
             <button class="btn btn-outline-dark fw-bold mx-lg-3 mx-1"
